@@ -1,0 +1,27 @@
+public class Agent implements Runnable {
+		
+	private Table table;
+	
+	public Agent(Table t)
+	{
+		this.table = t;
+	}
+	
+	public void run()
+	{
+		while(true)
+		{
+			try
+			{
+				table.addToTable();
+			}
+			catch (InterruptedException ie)
+			{
+				ie.printStackTrace();
+				System.exit(0);
+			}
+			
+		}	
+	}
+	
+}
