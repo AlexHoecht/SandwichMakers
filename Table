@@ -1,0 +1,127 @@
+import java.util.*;
+
+
+
+public class Table {
+	
+	private ArrayList<Ingredient> ingredientsOnTable;
+	
+	private Thread agent;
+	private Thread chefB;
+	private Thread chefP;
+	private Thread chefJ;
+	
+	private int count;
+	
+	public Table()
+	{
+		count = 0;
+		
+		//Initialize where the ingredients are stored
+		ingredientsOnTable = new ArrayList<Ingredient>();
+		//Create a new thread for the Agent
+		agent = new Thread(new Agent(this));
+		
+		agent.start();
+		
+		//Create a new thread for each chef
+		chefB = new Thread(new Chef(this));
+		chefP = new Thread(new Chef(this));
+		chefJ = new Thread(new Chef(this));
+		
+		chefB.start();
+		chefP.start();
+		chefJ.start();
+	}
+	
+	public synchronized void addToTable() throws InterruptedException
+	{
+		while(!ingredientsOnTable.isEmpty())
+		{
+			System.out.println();
+			System.out.println("The Table has the following on it:");
+			for(int i = 0; i <= 1; i++)
+			{
+				System.out.print(ingredientsOnTable.get(i) + " ");
+			}
+			System.out.println();
+			wait();
+		}
+		Random rand = new Random();
+		boolean same = true;
+		int i1 = rand.nextInt(3);
+		int i2 = rand.nextInt(3);
+		while(same)
+		{
+			if(i2 == i1)
+			{
+				i2 = rand.nextInt(3);
+			}
+			else
+			{
+				same = false;
+			}
+		}
+			
+		ingredientsOnTable.add(Ingredient.values()[i1]);
+		ingredientsOnTable.add(Ingredient.values()[i2]);
+		
+		System.out.println("Agent has added to table!");
+		
+	notifyAll();
+	}
+	
+	public synchronized void removeFromTable() throws InterruptedException
+	{
+		while(ingredientsOnTable.isEmpty())
+		{
+			System.out.println();
+			System.out.println("The table is empty.");
+			
+			wait();
+		}
+		
+		if(ingredientsOnTable.contains(Ingredient.BREAD)
+				&& ingredientsOnTable.contains(Ingredient.PEANUTBUTTER))
+		{
+			System.out.println("Chef Jam Has made a sandwich :)");
+			removeAll();
+			notifyAll();
+		}
+		if(ingredientsOnTable.contains(Ingredient.JAM)
+				&& ingredientsOnTable.contains(Ingredient.PEANUTBUTTER))
+		{
+			System.out.println("Chef Bread Has made a sandwich :)");
+			removeAll();
+			notifyAll();
+		}
+		if(ingredientsOnTable.contains(Ingredient.BREAD)
+				&& ingredientsOnTable.contains(Ingredient.JAM))
+		{
+			System.out.println("Chef PeanutButter Has made a sandwich :)");
+			removeAll();
+			notifyAll();
+		}
+	}
+	
+	public void removeAll()
+	{
+		for(int i = 0; i <= 1; i++)
+		{
+			ingredientsOnTable.remove(0);
+		}
+		count++;
+		if(count == 19)
+		{
+			System.exit(0);
+		}
+	}
+	
+	
+	public static void main(String[] args)
+	{
+		Table table = new Table();
+	}
+	
+
+}
