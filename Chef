@@ -1,0 +1,26 @@
+public class Chef implements Runnable {
+	
+	private Table table;
+	
+	public Chef(Table t)
+	{
+		this.table = t;
+	}
+	
+	public void run()
+	{
+		while(true)
+		{
+			try
+			{
+				table.removeFromTable();
+			}
+			catch (InterruptedException ie)
+			{
+				ie.printStackTrace();
+				System.exit(0);
+			}
+		}
+	}
+
+}
